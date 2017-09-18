@@ -44,12 +44,13 @@ def dfs(problem):
   visited[start] = None
   while not s.is_empty():
     cur = s.pop()
-    if problem.is_goal_state(cur):
-      break
     for state in problem.get_successors(cur):
       if state not in visited:
         s.push(state)
         visited[state] = cur
+      if problem.is_goal_state(state):
+        cur = state
+        break
   path = []
   while cur is not None:
     path.append(cur)
@@ -73,17 +74,18 @@ def ids(problem):
     visited[start] = None
     while not s.is_empty():
       (cur, d) = s.pop()
-      if problem.is_goal_state(cur):
-        while cur is not None:
-          path.append(cur)
-          cur = visited[cur]
-        path.reverse()
-        return path
       if d != depth:
         for state in problem.get_successors(cur):
           if state not in visited:
             s.push((state, d + 1))
             visited[state] = cur
+          if problem.is_goal_state(state):
+            cur = state
+            while cur is not None:
+              path.append(cur)
+              cur = visited[cur]
+            path.reverse()
+            return path
     depth += 1
 
 
@@ -203,14 +205,15 @@ def main():
   tg = TileGame(3)
   print TileGame.board_to_pretty_string(tg.get_start_state())
   # compute path
-  path = astar(tg, tilegame_heuristic)
+  path = ids(tg)
   # display path
   TileGame.print_pretty_path(path)
+  print len(path)
 
 
 # an example with DGraphs:
-small_dgraph = DGraph([[None, None, 1], [1, None, 1], [1, 1, None]], {1})
-print ids(small_dgraph)
+# small_dgraph = DGraph([[None, None, 1], [1, None, 1], [1, 1, None]], {1})
+# print ids(small_dgraph)
 
 def tester():
   """
