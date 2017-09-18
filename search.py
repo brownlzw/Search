@@ -78,7 +78,6 @@ def ids(problem):
           path.append(cur)
           cur = visited[cur]
         path.reverse()
-        print len(visited)
         return path
       if d != depth:
         for state in problem.get_successors(cur):
