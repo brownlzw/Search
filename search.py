@@ -29,6 +29,7 @@ def bfs(problem):
     path.append(cur)
     cur = visited[cur]
   path.reverse()
+  print len(visited)
   return path
 
 
@@ -55,6 +56,7 @@ def dfs(problem):
     path.append(cur)
     cur = visited[cur]
   path.reverse()
+  print len(visited)
   return path
 
 
@@ -80,6 +82,7 @@ def ids(problem):
           path.append(cur)
           cur = visited[cur]
         path.reverse()
+        print len(visited)
         return path
       if d_map[cur] != depth:
         for state in problem.get_successors(cur):
@@ -137,6 +140,7 @@ def bds(problem, goal):
   while backward is not None:
     path.append(backward)
     backward = map2[backward]
+  print len(map1) + len(map2)
   return path
 
 
@@ -164,16 +168,18 @@ def astar(problem, heur):
     cur_cost = cost[cur]
     if problem.is_goal_state(cur):
       break
-    for state in problem.get_successors(cur):
+    dict = problem.get_successors(cur)
+    for state in dict:
       if state not in visited:
-        pq.push_with_priority(state, cur_cost + 1 + heur(state))
+        pq.push_with_priority(state, cur_cost + dict[state] + heur(state))
         visited[state] = cur
-        cost[state] = cur_cost + 1
+        cost[state] = cur_cost + dict[state]
   path = []
   while cur is not None:
     path.append(cur)
     cur = visited[cur]
   path.reverse()
+  print len(visited)
   return path
 
 
@@ -206,9 +212,16 @@ def main():
   tg = TileGame(3)
   print TileGame.board_to_pretty_string(tg.get_start_state())
   # compute path
-  path = bfs(tg)
+  # path1 = bfs(tg)
+  # print len(path1)
+  # path2 = ids(tg)
+  # print len(path2)
+  # path3 = bds(tg, tg.goal_state)
+  # print len(path3)
+  path4 = astar(tg,tilegame_heuristic)
   # display path
-  TileGame.print_pretty_path(path)
+  TileGame.print_pretty_path(path4)
+  print len(path4)
 
 
 # an example with DGraphs:
